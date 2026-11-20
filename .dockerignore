@@ -1,0 +1,14 @@
+**/__pycache__
+**/*.pyc
+.venv
+.yolo_config
+results
+models
+tests
+.preferences.json
+.current_run.json
+.server.json
+*.zip
+*.tar*
+*.tmp
+MANIFEST.sha256

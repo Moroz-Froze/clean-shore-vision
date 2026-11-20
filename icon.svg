@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Чистый берег — мониторинг береговой линии">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0B2A59"/>
+      <stop offset="100%" stop-color="#144288"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Скруглённая подложка -->
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <!-- Две волны -->
+  <path d="M0 96 C22 83 41 88 62 98 S99 102 128 92 V128 H0Z" fill="#7DE3F4"/>
+  <path d="M0 108 C25 97 42 102 64 112 S99 109 128 103 V128 H0Z" fill="#00B4D8"/>
+
+  <!-- Восьмилучевая звезда -->
+  <polygon fill="#FFFFFF" points="64,15 69,46 80,41 74,52 97,57 74,62 80,73 69,68 64,99 59,68 48,73 54,62 31,57 54,52 48,41 59,46"/>
+  <circle cx="64" cy="57" r="12.5" fill="#FF8500"/>
+  <polygon points="64,48 55.8,62 72.2,62" fill="#299AF5"/>
+
+  <!-- Уголки видоискателя -->
+  <path d="M35 17H17V35 M93 17H111V35 M17 93V111H35 M93 111H111V93" fill="none" stroke="#0B2A59" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M35 17H17V35 M93 17H111V35 M17 93V111H35 M93 111H111V93" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

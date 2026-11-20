@@ -1,0 +1,66 @@
+<!doctype html><html lang="ru"><meta charset="utf-8">
+<style>
+*{box-sizing:border-box}body{margin:0;font:14px system-ui,sans-serif;color:#0b2a59;background:white}
+canvas{display:block;width:100%;margin:auto;touch-action:none;border-radius:6px;cursor:crosshair}
+button{font:inherit;border:1px solid #dce0e5;background:white;border-radius:8px;padding:8px 13px;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+#menu{position:fixed;z-index:10;min-width:215px;padding:5px;background:white;border:1px solid #d1e7ee;border-radius:10px;box-shadow:0 8px 28px #0b2a5925}
+#menu[hidden]{display:none}#menu button{display:block;text-align:left;width:100%;border:0;padding:10px;background:white}#menu button:hover{background:#edf9fc}#menu .danger{color:#bd2727}
+</style>
+<canvas id="photo" aria-label="Выделение объектов на фото"></canvas>
+<div id="menu" role="menu" aria-label="Действия с объектами" hidden><button role="menuitem" id="menu-remove" class="danger">Убрать выделенные объекты</button><button role="menuitem" id="menu-clear">Снять выделение</button><button role="menuitem" id="menu-all">Выделить все объекты</button></div>
+<script>
+const canvas=document.querySelector('canvas'),ctx=canvas.getContext('2d'),remove=document.querySelector('#menu-remove'),clear=document.querySelector('#menu-clear');
+const menu=document.querySelector('#menu');
+let args={},image=new Image(),selected=new Set(),start=null,current=null,ready=false,signature='';
+function send(type,extra={}){parent.postMessage({isStreamlitMessage:true,type,...extra},'*')}
+function height(){send('streamlit:setFrameHeight',{height:Math.ceil(document.body.scrollHeight)})}
+function boxes(){return (args.objects||[]).map(o=>({id:o.object_id,x:o.bbox_x/args.image_width*canvas.clientWidth,y:o.bbox_y/args.image_height*canvas.clientHeight,w:o.bbox_width/args.image_width*canvas.clientWidth,h:o.bbox_height/args.image_height*canvas.clientHeight}))}
+function rect(a,b){return {x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),w:Math.abs(a.x-b.x),h:Math.abs(a.y-b.y)}}
+function draw(){
+ if(!ready)return;
+ const available=document.documentElement.clientWidth;
+ const w=args.max_height?Math.min(available,args.max_height*args.image_width/args.image_height):available,h=w*args.image_height/args.image_width,dpr=devicePixelRatio||1;
+ canvas.style.width=w+'px';
+ canvas.style.height=h+'px';canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);ctx.drawImage(image,0,0,w,h);
+ ctx.font='bold 12px system-ui';
+ for(const b of boxes()){
+  const color=selected.has(b.id)?'#df6b00':'#087e9e';ctx.strokeStyle=color;ctx.lineWidth=selected.has(b.id)?3:2;ctx.strokeRect(b.x,b.y,b.w,b.h);
+  const text=String(b.id),tw=ctx.measureText(text).width+10,lx=Math.min(b.x,w-tw),ly=Math.max(0,b.y-20);
+  ctx.fillStyle=color;ctx.fillRect(lx,ly,tw,19);ctx.fillStyle='white';ctx.fillText(text,lx+5,ly+14);
+ }
+ if(start&&current){const r=rect(start,current);ctx.fillStyle='#087e9e22';ctx.fillRect(r.x,r.y,r.w,r.h);ctx.strokeStyle='#087e9e';ctx.setLineDash([5,4]);ctx.strokeRect(r.x,r.y,r.w,r.h);ctx.setLineDash([])}
+ remove.disabled=clear.disabled=!selected.size;height();
+}
+function point(e){const r=canvas.getBoundingClientRect();return {x:Math.max(0,Math.min(r.width,e.clientX-r.left)),y:Math.max(0,Math.min(r.height,e.clientY-r.top))}}
+function hitAt(p){return boxes().filter(b=>p.x>=b.x-4&&p.x<=b.x+Math.max(b.w,6)+4&&p.y>=Math.max(0,b.y-20)&&p.y<=b.y+Math.max(b.h,6)+4).sort((a,b)=>a.w*a.h-b.w*b.h)[0]}
+canvas.onpointerdown=e=>{if(!ready||args.read_only||e.button!==0)return;menu.hidden=true;start=point(e);current=start;canvas.setPointerCapture(e.pointerId)};
+canvas.onpointermove=e=>{if(start){current=point(e);draw()}};
+canvas.onpointerup=e=>{
+ if(e.button!==0||!start)return;const end=point(e),r=rect(start,end),bs=boxes();
+ if(Math.hypot(r.w,r.h)>5){for(const b of bs)if(b.x<=r.x+r.w&&b.x+b.w>=r.x&&b.y<=r.y+r.h&&b.y+b.h>=r.y)selected.add(b.id)}
+ else{const hit=hitAt(end);if(hit){selected.has(hit.id)?selected.delete(hit.id):selected.add(hit.id)}else selected.clear()}
+ start=current=null;draw();
+};
+canvas.onpointercancel=()=>{start=current=null;draw()};
+canvas.oncontextmenu=e=>{
+ e.preventDefault();start=current=null;if(!ready||args.read_only)return;
+ const hit=hitAt(point(e));
+ if(hit&&!selected.has(hit.id)){selected.clear();selected.add(hit.id)}
+ if(!selected.size){menu.hidden=true;draw();return}
+ draw();menu.hidden=false;menu.style.left=Math.max(0,Math.min(e.clientX,innerWidth-menu.offsetWidth-6))+'px';menu.style.top=Math.max(0,Math.min(e.clientY,innerHeight-menu.offsetHeight-6))+'px';
+};
+document.addEventListener('pointerdown',e=>{if(!menu.contains(e.target))menu.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){menu.hidden=true;selected.clear();draw()}});
+document.querySelector('#menu-all').onclick=()=>{menu.hidden=true;selected=new Set(boxes().map(b=>b.id));draw()};
+clear.onclick=()=>{menu.hidden=true;selected.clear();draw()};
+remove.onclick=()=>{if(!selected.size)return;menu.hidden=true;remove.disabled=true;send('streamlit:setComponentValue',{dataType:'json',value:{ids:[...selected],revision:args.revision,token:Date.now()+'-'+Math.random()}})};
+window.addEventListener('message',e=>{
+ if(e.source!==parent||e.data.type!=='streamlit:render')return;
+ const next=e.data.args,nextSignature=next.image+'|'+next.revision;
+ args=next;
+ if(signature!==nextSignature){signature=nextSignature;menu.hidden=true;selected.clear();start=current=null;ready=false;image=new Image();image.onload=()=>{ready=true;draw()};image.src=args.image}else draw();
+});
+new ResizeObserver(()=>draw()).observe(document.documentElement);
+send('streamlit:componentReady',{apiVersion:1});height();
+</script></html>

@@ -1,0 +1,107 @@
+[data-testid="stHeader"], [data-testid="stToolbar"], #MainMenu, footer {display:none!important}
+html, body, [data-testid="stAppViewContainer"] {background:#f6fafc;color:#0b2a59}
+.block-container {max-width:1480px;padding:1.5rem 3rem 3rem}
+section[data-testid="stSidebar"] {width:72px!important;min-width:72px!important;max-width:72px!important;background:linear-gradient(180deg,#0b2a59 0%,#144288 72%,#105e83 100%);border-right:1px solid #123b70}
+[data-testid="stSidebarHeader"], [data-testid="stSidebarCollapseButton"], [data-testid="collapsedControl"] {display:none!important}
+[data-testid="stSidebarContent"] {padding:0!important;width:72px!important;box-sizing:border-box;scrollbar-gutter:auto!important;scrollbar-width:none}
+[data-testid="stSidebarContent"]::-webkit-scrollbar {display:none}
+[data-testid="stSidebarUserContent"] {padding:18px 12px!important;width:72px!important;box-sizing:border-box}
+section[data-testid="stSidebar"] button {height:44px;min-height:44px;width:46px;border:0;border-radius:12px;background:transparent;color:#bdd8ee;box-shadow:none}
+section[data-testid="stSidebar"] button:hover {background:#ffffff15;color:#fff}
+section[data-testid="stSidebar"] button[kind="primary"] {background:#7de3f4;color:#0b2a59}
+section[data-testid="stSidebar"] button p {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.st-key-rail_bottom {position:fixed;bottom:20px;left:12px;width:46px}
+.rail-brand {width:48px;height:48px;margin:0 0 18px;display:flex;align-items:center;justify-content:center;color:#2463eb}
+.rail-brand svg {display:block;width:46px;height:46px;flex-shrink:0;border-radius:10px;overflow:hidden}
+/* Icon-only controls retain accessible labels without invisible layout gaps. */
+section[data-testid="stSidebar"] button,.st-key-analyze button {padding:0!important;display:flex;align-items:center;justify-content:center}
+section[data-testid="stSidebar"] button>div,.st-key-analyze button>div {display:flex;align-items:center;justify-content:center;width:100%;height:100%;gap:0!important}
+section[data-testid="stSidebar"] button [data-has-shortcut],.st-key-analyze button [data-has-shortcut] {display:flex;align-items:center;justify-content:center;gap:0!important;width:100%;height:100%}
+section[data-testid="stSidebar"] button [data-testid="stMarkdownContainer"],.st-key-analyze button [data-testid="stMarkdownContainer"] {position:absolute!important;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+[data-testid="stIconMaterial"] {display:inline-flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0}
+section[data-testid="stSidebar"] button [data-testid="stIconMaterial"],.st-key-analyze button [data-testid="stIconMaterial"] {width:24px;height:24px;font-size:24px}
+section[data-testid="stSidebar"] button {position:relative;transition:background-color .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease}
+section[data-testid="stSidebar"] button:hover:not(:disabled) {transform:translateY(-1px)}
+section[data-testid="stSidebar"] button:active:not(:disabled) {transform:scale(.93)}
+/* One persistent highlight moves between the fixed 44px rows (16px gap). */
+.st-key-rail_nav {position:relative;isolation:isolate;gap:16px!important}
+.st-key-rail_nav::before {content:"";position:absolute;top:0;left:0;width:46px;height:44px;border-radius:12px;background:#7de3f4;pointer-events:none;z-index:0;transform:translateY(0);transition:transform .42s cubic-bezier(.22,.8,.25,1);will-change:transform}
+.st-key-rail_nav:has(.st-key-nav_gallery button[kind="primary"])::before {transform:translateY(60px)}
+.st-key-rail_nav:has(.st-key-nav_export button[kind="primary"])::before {transform:translateY(120px)}
+.st-key-rail_nav [data-testid="stButton"] {position:relative;z-index:1}
+section[data-testid="stSidebar"] .st-key-rail_nav button[kind="primary"] {background:transparent;animation:none}
+section[data-testid="stSidebar"] .st-key-rail_nav button:hover:not(:disabled),section[data-testid="stSidebar"] .st-key-rail_nav button:active:not(:disabled) {transform:none}
+@media(prefers-reduced-motion:reduce){.st-key-rail_nav::before{transition:none;will-change:auto}}
+@keyframes shore-page-enter {from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.st-key-page_upload,.st-key-page_gallery,.st-key-page_map,.st-key-page_export {animation:shore-page-enter .22s ease-out both}
+@media(prefers-reduced-motion:reduce){.st-key-page_upload,.st-key-page_gallery,.st-key-page_map,.st-key-page_export{animation:none}section[data-testid="stSidebar"] button{transition:none;animation:none!important;transform:none!important}}
+.app-brand {font-size:17px;font-weight:600;letter-spacing:-.3px;color:#0b2a59}
+.st-key-welcome {max-width:760px;margin:clamp(80px,22vh,220px) auto 0}
+.st-key-welcome h1 {text-align:center;font-size:30px;font-weight:500;letter-spacing:-.8px;margin-bottom:24px;color:#0b2a59}
+.st-key-upload_bar {padding:10px 14px 10px 18px;background:#fff;border:1px solid #d1e7ee;border-radius:30px}
+.st-key-upload_bar [data-testid="stFileUploaderDropzone"] {border:0;background:transparent;padding:0;min-height:48px}
+.st-key-upload_bar [data-testid="stFileUploader"] {margin:0}
+.st-key-upload_bar [data-testid="stFileUploaderDropzone"] small {color:#858b94}
+.st-key-upload_bar [data-testid="stFileUploaderDropzone"] button {border:0;background:white;border-radius:18px;font-size:14px}
+.st-key-analyze button {width:44px;height:44px;min-height:44px;border-radius:50%;padding:0;background:#ff8500;border-color:#ff8500;color:#0b2a59}
+.st-key-analyze button p {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.welcome-note {text-align:center;color:#668496;font-size:12px;margin-top:14px}
+h1 {font-size:27px!important;font-weight:550!important;letter-spacing:-.6px}
+h2,h3 {font-weight:550!important}
+[data-testid="stMetricValue"] {font-size:27px;font-weight:500}
+[data-testid="stMetricLabel"] {color:#5f7c94;font-size:12px}
+.st-key-summary {border:1px solid #dceaf0;border-radius:18px;padding:20px 24px;margin:20px 0 26px;background:#fff;box-shadow:0 6px 24px #0b2a5905;border-top:3px solid #00b4d8}
+.st-key-photo_panel {background:#fff;border:1px solid #dceaf0;border-radius:16px;padding:12px}
+.st-key-photo_panel img {border-radius:10px}
+.st-key-review_panel {padding:0 0 0 10px}
+[data-testid="stDataFrame"] {border-radius:12px;overflow:hidden}
+button {border-radius:10px!important}
+.st-key-upload_bar button {border-radius:18px!important}
+.st-key-analyze button {border-radius:50%!important}
+[data-testid="stDialog"] [role="dialog"] {border-radius:20px}
+[data-testid="stImageCaption"] {font-size:12px;color:#8a919a}
+@media(max-width:800px){.block-container{padding:1.2rem 1rem}.st-key-welcome{margin-top:14vh}.st-key-welcome h1{font-size:24px!important}}
+
+/* Coastal identity: navy structure, water accents, restrained rescue orange. */
+.rail-brand svg {box-shadow:0 3px 12px #04193440}
+.app-brand {display:flex;align-items:center;gap:9px}
+.app-brand::before {content:"";width:7px;height:7px;border-radius:50%;background:#ff8500;box-shadow:0 0 0 4px #ff850015}
+.st-key-welcome {position:relative}
+.st-key-welcome::before {content:"";display:block;width:62px;height:4px;border-radius:5px;margin:0 auto 22px;background:linear-gradient(90deg,#0b2a59 0 35%,#00b4d8 35% 76%,#ff8500 76%)}
+.st-key-upload_bar {box-shadow:0 12px 36px #0b2a5909;border-bottom:3px solid #7de3f4}
+.st-key-upload_bar [data-testid="stFileUploaderDropzone"] button {color:#144288;background:#eef8fb}
+.st-key-analyze button:enabled:hover {background:#ff9c33;border-color:#ff9c33;box-shadow:0 4px 12px #ff850025}
+[data-testid="stMetricValue"] {color:#0b2a59}
+[data-testid="stDialog"] [role="dialog"] {border:1px solid #d1e7ee;box-shadow:0 24px 80px #0b2a5920}
+[data-testid="stMain"] button[kind="secondary"] {border-color:#cddfe9;color:#144288;background:#fff}
+[data-testid="stMain"] button[kind="secondary"]:hover {border-color:#00b4d8;background:#effbfe}
+[data-testid="stMain"] button:focus-visible {outline:2px solid #00b4d8;outline-offset:3px}
+
+.st-key-photo_filters {background:#fff;border:1px solid #dceaf0;border-radius:14px;padding:16px 20px 6px;margin-top:2px}
+.st-key-photo_filters [data-testid="stSlider"] p {font-size:13px;color:#315676}
+@media(max-width:700px){.st-key-photo_filters [data-testid="stHorizontalBlock"]{flex-direction:column}.st-key-photo_filters [data-testid="stColumn"]{width:100%;flex:1}}
+
+/* Gallery workspace only. The application rail is deliberately unchanged. */
+.st-key-page_gallery {margin-top:18px}
+.st-key-workspace_header {background:#fff;border:1px solid #dce6ed;border-radius:10px 10px 0 0;padding:10px 12px}
+.st-key-workspace_header [data-testid="stHorizontalBlock"] {gap:6px}
+.st-key-workspace_header button {height:38px;min-height:38px;padding:0!important}
+.st-key-workspace_header button [data-testid="stMarkdownContainer"] {position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.st-key-workspace_header button [data-has-shortcut] {gap:0;justify-content:center}
+.st-key-workspace_status {margin-top:-16px;background:#fff;border:1px solid #dce6ed;border-top:0;border-radius:0 0 10px 10px;padding:5px 14px;min-height:28px}
+.st-key-workspace_status p {font-size:12px;line-height:18px;color:#6a8194;margin:0}
+.st-key-page_gallery .st-key-photo_panel {border-radius:10px;margin-top:0;padding:10px;background:#eaf0f4;border-color:#dce6ed;box-shadow:inset 0 0 30px #17355104}
+.st-key-page_gallery .st-key-photo_filters {padding:10px 14px 0;border-radius:10px}
+.st-key-page_gallery [data-testid="stSlider"] p {font-size:11px}
+.st-key-frame_inspector,.st-key-filmstrip {border:1px solid #dce6ed;background:#fff;border-radius:10px;padding:12px}
+.st-key-frame_inspector [data-testid="stMetricValue"] {font-size:22px}
+.st-key-frame_inspector [data-testid="stMetricLabel"] {font-size:11px}
+.st-key-frame_inspector p,.st-key-filmstrip p {font-size:12px}
+.st-key-frame_inspector [data-testid="stVerticalBlock"] {gap:6px}
+.st-key-filmstrip [data-testid="stImage"] img {border-radius:5px;object-fit:cover;max-height:58px}
+.st-key-filmstrip button {padding:3px 5px!important;min-height:26px;height:auto;text-align:left;justify-content:flex-start;white-space:normal;overflow-wrap:anywhere}
+.st-key-filmstrip button p {font-size:11px}
+.st-key-filmstrip [data-testid="stCaptionContainer"] p {font-size:10px;color:#7a8fa0}
+.st-key-filmstrip_scroll [data-testid="stVerticalBlock"] {gap:8px}
+@media(min-width:900px){.block-container:has(.st-key-page_gallery){max-width:1900px;padding:1rem 1.5rem 2rem}}
+@media(max-width:800px){.st-key-page_gallery>.stVerticalBlock>[data-testid="stHorizontalBlock"]{flex-wrap:wrap}.st-key-filmstrip_scroll{max-height:280px}}
