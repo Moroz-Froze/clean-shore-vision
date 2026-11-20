@@ -3,6 +3,7 @@ import csv,io,json,math,re
 import numpy as np
 import cv2
 from PIL import Image,ImageOps
+from security import limit,InputRejected
 cv2.setNumThreads(2)
 HIGH=.75;LOW=.51;MIN_AREA=120;MAX_AREA=10000;MIN_SEED_PIXELS=12;WINDOW=768;OVERLAP=192
 
@@ -112,8 +113,12 @@ def dms(value,ref):
     except (TypeError,IndexError,ValueError,ZeroDivisionError):return None
 
 def read_image(data):
+    if not data or len(data)>limit("MAX_UPLOAD_MB",100)*1024**2:raise InputRejected("Недопустимый размер файла.")
     xmp=parse_xmp(data[:4*1024*1024])
-    with Image.open(io.BytesIO(data)) as raw:
+    with Image.open(io.BytesIO(data),formats=("JPEG","PNG","TIFF")) as raw:
+        if raw.format not in ("JPEG","PNG","TIFF"):raise InputRejected("Разрешены только JPEG, PNG и TIFF.")
+        if raw.width*raw.height>limit("MAX_IMAGE_PIXELS",24000000):raise InputRejected("Снимок превышает лимит пикселей сервера.")
+        if getattr(raw,"n_frames",1)!=1:raise InputRejected("Многостраничные изображения не поддерживаются.")
         exif=raw.getexif()
         try:gps=exif.get_ifd(34853)
         except (KeyError,ValueError,TypeError):gps={}
@@ -179,7 +184,9 @@ def csv_bytes(objects):
     stream=io.StringIO(newline='');writer=csv.DictWriter(stream,FIELDS,extrasaction='ignore');writer.writeheader()
     for obj in objects:
         row=dict(obj)
-        if str(row.get('filename','')).startswith(('=','+','-','@')):row['filename']="'"+row['filename']
+        for key,value in row.items():
+            if isinstance(value,str) and (value.startswith(("\t","\r","\n","\0")) or value.lstrip().startswith(("=","+","-","@","＝","＋","－","＠"))):
+                row[key]="\'"+value
         writer.writerow(row)
     return stream.getvalue().encode('utf-8-sig')
 

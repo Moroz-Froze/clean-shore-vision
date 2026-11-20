@@ -11,15 +11,22 @@ from settings_ui import applied,seed_draft,settings_dialog
 from local_state import remember_job,restore_job,save_local
 from photo_editor import photo_editor,selected_exclusions
 from review_history import history_state,history_edit,history_move
-from runtime_paths import new_job_dir
+from runtime_paths import new_job_dir,server_mode
+from security import validate_uploads,analysis_slot,check_storage,public_error
 ROOT=Path(__file__).resolve().parent
 st.set_page_config(page_title='Чистый берег',page_icon=str(ROOT/'icon.svg'),layout='wide',initial_sidebar_state='expanded')
 
 @st.cache_resource(show_spinner='Загрузка модели…')
-def load_model(device,precision='auto',batch_size='auto'):return ShoreModel(device,precision,batch_size)
+def _load_model(device,precision='auto',batch_size='auto'):return ShoreModel(device,precision,batch_size)
+
+def load_model(device,precision='auto',batch_size='auto'):
+    return _load_model('cpu','fp32',1) if server_mode() else _load_model(device,precision,batch_size)
 
 @st.cache_resource(show_spinner='Загрузка фильтра людей и транспорта…')
-def load_exclusion_detector(device='auto'):return ExclusionDetector(device)
+def _load_exclusion_detector(device='auto'):return ExclusionDetector(device)
+
+def load_exclusion_detector(device='auto'):
+    return _load_exclusion_detector('cpu' if server_mode() else device)
 
 def navigate(view):st.session_state['view']=view
 
@@ -97,7 +104,7 @@ def live_filter(job,frame):
             st.session_state['exclusion_detections']={'source_sha256':frame.get('source_sha256'),'detections':detections,'detector':frame['exclusion_detector']}
             write_exports(folder,job['frames'],job['errors'],job['settings'],build_zip=False);remember_job(job)
         except Exception as exc:
-            st.error('Не удалось включить исключение людей и транспорта: '+str(exc));return None
+            st.error(public_error(exc));return None
     key=(str(folder),name)
     cache=st.session_state.get('probability')
     if not cache or cache['key']!=key:
@@ -212,16 +219,26 @@ def export_view(job):
 
 def run_analysis(uploads,settings,device):
     try:
+        validate_uploads(uploads)
+        with analysis_slot():
+            check_storage()
+            _run_analysis(uploads,settings,device)
+    except ValueError as exc:st.error(public_error(exc))
+
+
+def _run_analysis(uploads,settings,device):
+    try:
         model=load_model(device,applied()['precision'],applied()['batch_size'])
         detector=load_exclusion_detector(device) if settings.get('exclude_people_vehicles') else None
-    except Exception as exc:st.error('Не удалось загрузить модель: '+str(exc));return
+    except Exception as exc:st.error(public_error(exc));return
     folder=new_job_dir();frames=[];errors=[]
     bar=st.progress(0.,text='Обработка…')
     for i,uploaded in enumerate(uploads):
         try:
+            check_storage()
             def progress(done,total):bar.progress((i+done/total)/len(uploads),text=f'{i+1} / {len(uploads)} · {uploaded.name}')
             frames.append(process_photo(model,uploaded.getvalue(),uploaded.name,i+1,folder,settings,progress,detector=detector))
-        except Exception as exc:errors.append({'filename':uploaded.name,'error':str(exc)})
+        except Exception as exc:errors.append({'filename':uploaded.name,'error':public_error(exc)})
         bar.progress((i+1)/len(uploads),text=f'{i+1} / {len(uploads)}')
     write_exports(folder,frames,errors,settings,build_zip=False)
     st.session_state.pop('probability',None);st.session_state.pop('filter_preview',None)

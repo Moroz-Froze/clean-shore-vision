@@ -11,3 +11,8 @@ results/
 .server.json
 *.tar.gz
 *.zip
+
+*.htpasswd
+*.pem
+*.key
+.streamlit/secrets.toml

@@ -49,6 +49,6 @@ docker compose exec clean-shore python serve.py --smoke-test
 
 ## Проверка этой поставки
 
-Проверены: 29 тестов приложения, перенос путей хранения, отсутствие общего восстановления снимков, контрольные суммы весов, реальный CPU-прогон SegFormer и YOLO, а также синтаксис Docker Compose. Полная сборка и запуск Linux-контейнера в текущей среде не выполнены: Docker Engine не запущен. Перед эксплуатацией на сервере выполните приведенные команды `--check-only` и `--smoke-test`.
+Проверены: 36 тестов приложения, перенос путей хранения, отсутствие общего восстановления снимков, контрольные суммы весов, реальный CPU-прогон SegFormer и YOLO, а также синтаксис Docker Compose. Полная сборка и запуск Linux-контейнера в текущей среде не выполнены: Docker Engine не запущен. Перед эксплуатацией на сервере выполните приведенные команды `--check-only` и `--smoke-test`.
 
 Официальная документация: [Docker Engine](https://docs.docker.com/engine/install/), [Docker Compose](https://docs.docker.com/compose/), [CPU-сборки PyTorch](https://pytorch.org/get-started/previous-versions/).

@@ -36,6 +36,7 @@ def smoke_test():
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--check-only',action='store_true');parser.add_argument('--smoke-test',action='store_true')
     args=parser.parse_args()
+    if not os.environ.get('STREAMLIT_SERVER_COOKIE_SECRET','').strip():os.environ.pop('STREAMLIT_SERVER_COOKIE_SECRET',None)
     os.environ.setdefault('CLEAN_SHORE_SERVER','1')
     os.environ.setdefault('HF_HUB_OFFLINE','1');os.environ.setdefault('TRANSFORMERS_OFFLINE','1')
     try:

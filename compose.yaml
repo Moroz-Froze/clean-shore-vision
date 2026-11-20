@@ -8,8 +8,24 @@ services:
       - "${BIND_ADDRESS:-127.0.0.1}:${HTTP_PORT:-8501}:8501"
     environment:
       MAX_UPLOAD_MB: "${MAX_UPLOAD_MB:-100}"
+      MAX_BATCH_MB: "${MAX_BATCH_MB:-256}"
+      MAX_BATCH_FILES: "${MAX_BATCH_FILES:-32}"
+      MAX_IMAGE_PIXELS: "${MAX_IMAGE_PIXELS:-24000000}"
+      MAX_STORED_MB: "${MAX_STORED_MB:-10240}"
+      MIN_FREE_MB: "${MIN_FREE_MB:-2048}"
+      STREAMLIT_SERVER_COOKIE_SECRET: "${STREAMLIT_SERVER_COOKIE_SECRET:-}"
+      STREAMLIT_SERVER_ALLOWED_HOSTS: '${STREAMLIT_SERVER_ALLOWED_HOSTS:-["localhost","127.0.0.1"]}'
+      STREAMLIT_SERVER_CORS_ALLOWED_ORIGINS: '${STREAMLIT_SERVER_CORS_ALLOWED_ORIGINS:-["http://localhost:8501","http://127.0.0.1:8501"]}' 
     volumes:
       - shore-data:/data
+    cpus: "${CPU_LIMIT:-2.0}"
+    mem_limit: "${MEMORY_LIMIT:-6g}"
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     read_only: true
     tmpfs:
       - /tmp:rw,nosuid,nodev,size=512m

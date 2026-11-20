@@ -11,3 +11,12 @@ tests
 *.tar*
 *.tmp
 MANIFEST.sha256
+
+**/*.htpasswd
+**/*.pem
+**/*.key
+.streamlit/secrets.toml
+
+.env
+.env.*
+!.env.example
