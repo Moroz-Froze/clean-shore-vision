@@ -13,6 +13,10 @@ RUN python -m pip install --upgrade pip \
     && python -m pip install torch==2.8.0 torchvision==0.23.0 --index-url https://download.pytorch.org/whl/cpu \
     && python -m pip install -r requirements.txt \
     && python -m pip check
+COPY download_models.py ./download_models.py
+COPY models/ /models/
+# Full release includes weights; a Git clone downloads verified weights during build.
+RUN python download_models.py
 RUN groupadd --gid 10001 shore && useradd --uid 10001 --gid shore --no-create-home shore \
     && mkdir -p /data /models && chown shore:shore /data
 COPY *.py *.svg *.css ./

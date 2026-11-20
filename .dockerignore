@@ -3,7 +3,6 @@
 .venv
 .yolo_config
 results
-models
 tests
 .preferences.json
 .current_run.json

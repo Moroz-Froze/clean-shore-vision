@@ -29,7 +29,9 @@ def install(archive,destination):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--archive',type=Path,help='Use an already downloaded release archive')
-    args=parser.parse_args();destination=Path(__file__).resolve().parent/'models'
+    args=parser.parse_args();destination=Path(os.environ.get('CLEAN_SHORE_MODELS_DIR',Path(__file__).resolve().parent/'models'))
+    if all((destination/name).is_file() and hashlib.sha256((destination/name).read_bytes()).hexdigest()==sha for name,sha in HASHES.items()):
+        print('V25 and YOLO11n weights already present and verified.');return
     if args.archive:install(args.archive,destination);return
     with tempfile.TemporaryDirectory() as temp:
         archive=Path(temp)/'release.tar.gz'
